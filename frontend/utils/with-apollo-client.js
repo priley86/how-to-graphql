@@ -20,7 +20,14 @@ export default App => {
       if (typeof window === 'undefined') {
         try {
           // Run all GraphQL queries
-          await getDataFromTree(<App {...appProps} Component={Component} router={router} apolloClient={apollo} />);
+          await getDataFromTree(
+            <App
+              {...appProps}
+              Component={Component}
+              router={router}
+              apolloClient={apollo}
+            />
+          );
         } catch (error) {
           // Prevent Apollo Client GraphQL errors from crashing SSR.
           // Handle them in components via the data.error prop:
@@ -38,13 +45,14 @@ export default App => {
 
       return {
         ...appProps,
-        apolloState
+        apolloState,
+        apiHost: process.env.API_HOST
       };
     }
 
     constructor(props) {
       super(props);
-      this.apolloClient = initApollo(props.apolloState);
+      this.apolloClient = initApollo(props.apolloState, props.apiHost);
     }
 
     render() {

@@ -1,0 +1,6 @@
+{
+  "version": 2,
+  "env": {
+    "API_HOST": "@api-host"
+  }
+}

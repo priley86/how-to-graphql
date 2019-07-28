@@ -1,0 +1,11 @@
+FROM node:10.16.0
+
+RUN npm install -g --unsafe-perm prisma2
+
+COPY . /home/app
+WORKDIR /home/app
+
+RUN npm install
+RUN prisma2 generate
+
+CMD [ "npm", "start" ]

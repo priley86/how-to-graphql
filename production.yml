@@ -1,0 +1,56 @@
+version: '3.7'
+networks:
+  proxy:
+    external: true
+  internal:
+    external: false
+services:
+  mysql:
+    networks:
+      - internal
+    labels:
+      - 'traefik.enable=false'
+  prisma:
+    labels:
+      - 'traefik.backend=prisma'
+      - 'traefik.frontend.rule=Host:how-to-graphql-prisma.dynu.net'
+      - 'traefik.docker.network=proxy'
+      - 'traefik.port=5555'
+    networks:
+      - internal
+      - proxy
+  backend:
+    labels:
+      - 'traefik.backend=backend'
+      - 'traefik.frontend.rule=Host:how-to-graphql-backend.dynu.net'
+      - 'traefik.docker.network=proxy'
+      - 'traefik.port=4000'
+    networks:
+      - internal
+      - proxy
+    build:
+      context: backend
+      dockerfile: Dockerfile.prod
+    environment:
+      NODE_ENV: production
+  traefik:
+    container_name: traefik
+    image: traefik:1.5.4
+    command: --docker
+    restart: always
+    ports:
+      - '80:80'
+      - '443:443'
+    networks:
+      - proxy
+    depends_on:
+      - backend
+      - mysql
+      - prisma
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # So that Traefik can listen to the Docker events
+      - /opt/traefik/traefik.toml:/traefik.toml
+      - /opt/traefik/acme.json:/acme.json
+    labels:
+      - 'traefik.frontend.rule=Host:how-to-graphql-traefik.dynu.net'
+      - 'traefik.port=8080'
