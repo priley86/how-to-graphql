@@ -1,0 +1,7 @@
+#import from '../fragments/authpayload.gql'
+
+mutation loginUserMutation($email: String!, $password: String!) {
+  login(email: $email, password: $password) {
+    ...AuthPayloadFragment
+  }
+}

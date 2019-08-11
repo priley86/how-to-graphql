@@ -1,0 +1,8 @@
+#import from '../user.gql'
+
+fragment AuthPayloadFragment on AuthPayload {
+  token
+  user {
+    ...UserFragment
+  }
+}

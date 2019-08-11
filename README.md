@@ -7,6 +7,8 @@ Some technologies used:
 - [Prisma2](https://www.prisma.io/blog/announcing-prisma-2-zq1s745db8i5) : Lift for migrations and Photon for type safe database access
 - [GraphQL Nexus](https://nexus.js.org/docs/database-access-with-prisma-v2) : GraphQL schema generator / resolver API
 - [GraphQL Yoga](https://github.com/prisma/graphql-yoga) : GraphQL server
+- [GraphQL Shield](https://github.com/maticzav/graphql-shield): GraphQL permission layer
+- [Apollo Client](https://www.apollographql.com/docs/react/) : frontend GraphQL client
 - [Next.js](https://nextjs.org/): Build server rendered React UIs that scale with serverless!
 
 This template also ensures that GraphQL schemas have safe type access across the stack.
@@ -31,6 +33,7 @@ The following technologies will be coming soon!
   - [Prereqs](#prereqs)
   - [Setting DotENV Variables](#setting-dotenv-variables)
   - [Deploy with Now](#deploy-with-now)
+  - [SSR and Authentication](#ssr-and-authentication)
 - [References](#references)
 
 # Running locally
@@ -359,6 +362,17 @@ And then redeploy with:
 npm run deploy:backend
 ```
 
+If you are debugging locally and running into caching troubles or you are completely stuck, I recommend making sure all containers showing in `docker ps` are stopped (`docker stop [container]`) and then completely cleaning Docker before restarting:
+
+```
+npm run stop
+npm run clean
+npm run clean:volumes
+npm run start
+```
+
+This will clear all containers and volumes, so be careful about doing this in production, but it should be fine while you are troubleshooting locally and can actually help you find any Docker issues before a release.
+
 To clear docker logs on the remote droplet you can run the following:
 
 ```
@@ -435,7 +449,21 @@ To deploy the frontend to Zeit, simply run `npm run deploy` or `now` from the `f
 > Ready! Deployed to https://frontend.priley86.now.sh [in clipboard] [48s]
 ```
 
-Now your UI is deployed!
+Congrats, now your serverless UI is deployed on Zeit!
+
+**Note**: Be sure to "Login" the user before creating drafts. For simplicity of this demo, "Login User" is directly beneath "Create User" so that you can create multiple users quickly.
+
+![Frontend](docs/img/frontend.png)
+
+## SSR and Authentication
+
+You can read more about SSR with Apollo in the docs [here](https://www.apollographql.com/docs/react/features/server-side-rendering/).
+
+Also, authentication in this stack is heavily based on the examples here:
+https://github.com/zeit/next.js/tree/canary/examples/with-apollo-auth
+https://github.com/prisma/photonjs/tree/master/examples/typescript/graphql-auth
+
+You can read more in the [Apollo Docs](https://www.apollographql.com/docs/react/recipes/authentication/) on authentication.
 
 # References
 

@@ -24,6 +24,9 @@ services:
       dockerfile: Dockerfile
     volumes:
       - prisma:/app/prisma
+    environment:
+      WAIT_HOSTS: mysql:3306
+      WAIT_HOSTS_TIMEOUT: 60
   backend:
     links:
       - mysql
@@ -39,6 +42,9 @@ services:
       - ./backend:/app
       - /app/node_modules
       - prisma:/app/prisma
+    environment:
+      WAIT_HOSTS: mysql:3306
+      WAIT_HOSTS_TIMEOUT: 60
 
 volumes:
   prisma:

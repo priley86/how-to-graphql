@@ -1,9 +1,12 @@
 import React from 'react';
 import { Row, Col, Button, Form, Input } from 'antd';
-import { SignupUserMutationComponent, UsersQueryDocument } from '../generated/apollo-components';
+import {
+  SignupUserMutationComponent,
+  UsersQueryDocument
+} from '../generated/apollo-components';
 
 type Props = {};
-const initialState = { name: '', email: '' };
+const initialState = { name: '', email: '', password: '' };
 type State = typeof initialState;
 
 class SignupUser extends React.Component<Props> {
@@ -32,12 +35,35 @@ class SignupUser extends React.Component<Props> {
             <Row>
               <Col span={6}>
                 <Form.Item>
-                  <Input placeholder="name" name="name" value={this.state.name} onChange={this.handleChange} type="text" />
+                  <Input
+                    placeholder="name"
+                    name="name"
+                    value={this.state.name}
+                    onChange={this.handleChange}
+                    type="text"
+                  />
                 </Form.Item>
               </Col>
               <Col span={6}>
                 <Form.Item>
-                  <Input placeholder="email" name="email" value={this.state.email} onChange={this.handleChange} type="text" />
+                  <Input
+                    placeholder="email"
+                    name="email"
+                    value={this.state.email}
+                    onChange={this.handleChange}
+                    type="text"
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={6}>
+                <Form.Item>
+                  <Input
+                    placeholder="password"
+                    name="password"
+                    value={this.state.password}
+                    onChange={this.handleChange}
+                    type="password"
+                  />
                 </Form.Item>
               </Col>
               <Col span={6}>

@@ -7,8 +7,10 @@
     "start": "docker-compose -f docker-compose.yml -f development.yml up --build",
     "stop": "docker-compose down",
     "clean": "docker system prune -af",
-    "seed": "docker exec -it prisma npm run seed",
-    "generate": "docker exec -it frontend npm run generate",
+    "clean:volumes": "docker volume prune -f",
+    "backend:seed": "docker exec -it backend npm run seed",
+    "backend:generate": "docker exec -it backend npm run generate",
+    "frontend:generate": "docker exec -it frontend npm run generate",
     "deploy:backend": "docker-compose -f docker-compose.yml -f production.yml up --build -d",
     "deploy:frontend": "cd frontend && npm run build && npm run deploy",
     "test": "echo \"Error: no test specified\" && exit 1"

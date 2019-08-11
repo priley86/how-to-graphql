@@ -6,4 +6,7 @@ fragment PostFragment on Post {
   title
   content
   published
+  author {
+    ...UserFragment
+  }
 }

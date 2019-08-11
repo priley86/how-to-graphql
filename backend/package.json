@@ -3,14 +3,23 @@
   "scripts": {
     "start": "ts-node-dev --no-notify --respawn --transpileOnly ./src",
     "seed": "ts-node prisma/seed.ts",
-    "postinstall": "prisma2 generate"
+    "save-migrations": "prisma2 lift save",
+    "apply-migrations": "prisma2 lift up",
+    "undo-migrations": "prisma2 lift down",
+    "generate": "prisma2 generate",
+    "postinstall": "npm run generate"
   },
   "dependencies": {
     "@prisma/nexus": "^0.0.1",
+    "bcrypt": "3.0.5",
+    "graphql-shield": "5.3.8",
     "graphql-yoga": "1.17.4",
+    "jsonwebtoken": "8.5.1",
     "nexus": "0.11.7"
   },
   "devDependencies": {
+    "@types/bcrypt": "3.0.0",
+    "@types/jsonwebtoken": "8.3.2",
     "@types/node": "10.14.9",
     "ts-node": "^8.3.0",
     "ts-node-dev": "1.0.0-pre.40",

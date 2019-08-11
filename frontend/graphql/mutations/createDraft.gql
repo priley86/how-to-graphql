@@ -1,7 +1,7 @@
 #import from '../fragments/post.gql'
 
-mutation createDraftMutation($title: String!, $content: String!, $authorEmail: String!) {
-  createDraft(title: $title, content: $content, authorEmail: $authorEmail) {
+mutation createDraftMutation($title: String!, $content: String!) {
+  createDraft(title: $title, content: $content) {
     ...PostFragment
   }
 }

@@ -1,9 +1,12 @@
 import React from 'react';
 import { Row, Col, Button, Form, Input } from 'antd';
-import { CreateDraftMutationComponent, FeedQueryDocument } from '../generated/apollo-components';
+import {
+  CreateDraftMutationComponent,
+  FeedQueryDocument
+} from '../generated/apollo-components';
 
 type Props = {};
-const initialState = { title: '', content: '', authorEmail: '' };
+const initialState = { title: '', content: '' };
 type State = typeof initialState;
 
 class NewDraft extends React.Component<Props> {
@@ -29,27 +32,28 @@ class NewDraft extends React.Component<Props> {
                 ]
               }).then(res => {
                 console.log(res);
-                this.setState({ title: '', content: '', authorEmail: '' });
+                this.setState({ title: '', content: '' });
               });
             }}
           >
             <Row>
               <Col span={6}>
                 <Form.Item>
-                  <Input placeholder="title" name="title" value={this.state.title} onChange={this.handleChange} type="text" />
-                </Form.Item>
-              </Col>
-              <Col span={6}>
-                <Form.Item>
-                  <Input placeholder="content" name="content" value={this.state.content} onChange={this.handleChange} type="text" />
+                  <Input
+                    placeholder="title"
+                    name="title"
+                    value={this.state.title}
+                    onChange={this.handleChange}
+                    type="text"
+                  />
                 </Form.Item>
               </Col>
               <Col span={6}>
                 <Form.Item>
                   <Input
-                    placeholder="authorEmail"
-                    name="authorEmail"
-                    value={this.state.authorEmail}
+                    placeholder="content"
+                    name="content"
+                    value={this.state.content}
                     onChange={this.handleChange}
                     type="text"
                   />

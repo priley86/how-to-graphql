@@ -13,12 +13,18 @@ class UsersList extends React.PureComponent<Props> {
           if (error) return <p>Error</p>;
 
           if (data && 'users' in data && data.users.length > 0) {
-            const feedData = data.users.map(({ name, email }, i) => ({
+            const feedData = data.users.map(({ id, name, email }, i) => ({
               key: i,
+              id,
               name,
               email
             }));
             const columns = [
+              {
+                title: 'Id',
+                dataIndex: 'id',
+                key: 'id'
+              },
               {
                 title: 'Name',
                 dataIndex: 'name',

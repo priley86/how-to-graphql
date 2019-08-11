@@ -2,35 +2,30 @@
 ### Do not make changes to this file directly
 
 
+type AuthPayload {
+  token: String!
+  user: User!
+}
+
 """DateTime"""
 scalar DateTime
 
 type Mutation {
-  createDraft(authorEmail: String, content: String, title: String): Post!
+  createDraft(content: String, title: String): Post!
   deleteOnePost(where: PostWhereUniqueInput!): Post
+  login(email: String, password: String): AuthPayload!
   publish(id: ID): Post
-  signupUser(data: UserCreateInput!): User!
+  signup(email: String, name: String, password: String): AuthPayload!
 }
 
 type Post {
+  author: User
   content: String
   createdAt: DateTime!
   id: ID!
   published: Boolean!
   title: String!
   updatedAt: DateTime!
-}
-
-input PostCreateManyWithoutPostsInput {
-  connect: [PostWhereUniqueInput!]
-  create: [PostCreateWithoutAuthorInput!]
-}
-
-input PostCreateWithoutAuthorInput {
-  content: String
-  id: ID
-  published: Boolean!
-  title: String!
 }
 
 input PostWhereUniqueInput {
@@ -40,6 +35,7 @@ input PostWhereUniqueInput {
 type Query {
   feed(published: Boolean): [Post!]!
   filterPosts(searchString: String): [Post!]!
+  me: User
   post(where: PostWhereUniqueInput!): Post
   users: [User!]!
 }
@@ -49,11 +45,4 @@ type User {
   id: ID!
   name: String
   posts(after: String, before: String, first: Int, last: Int, skip: Int): [Post!]
-}
-
-input UserCreateInput {
-  email: String!
-  id: ID
-  name: String
-  posts: PostCreateManyWithoutPostsInput
 }

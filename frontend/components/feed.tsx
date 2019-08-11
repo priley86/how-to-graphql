@@ -18,12 +18,15 @@ class FeedList extends React.PureComponent<Props> {
           if (error) return <p>Error</p>;
 
           if (data && 'feed' in data && data.feed.length > 0) {
-            const feedData = data.feed.map(({ id, title, content }, i) => ({
-              key: i,
-              title,
-              content,
-              id
-            }));
+            const feedData = data.feed.map(
+              ({ id, title, content, author }, i) => ({
+                key: i,
+                title,
+                content,
+                id,
+                author: author && author.email
+              })
+            );
             const columns = [
               {
                 title: 'Title',
@@ -34,6 +37,11 @@ class FeedList extends React.PureComponent<Props> {
                 title: 'Content',
                 dataIndex: 'content',
                 key: 'content'
+              },
+              {
+                title: 'Author',
+                dataIndex: 'author',
+                key: 'author'
               },
               {
                 title: 'Action',

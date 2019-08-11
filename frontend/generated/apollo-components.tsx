@@ -14,26 +14,39 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type AuthPayload = {
+  __typename?: "AuthPayload";
+  token: Scalars["String"];
+  user: User;
+};
+
 export type Mutation = {
   __typename?: "Mutation";
-  signupUser: User;
-  deleteOnePost?: Maybe<Post>;
+  signup: AuthPayload;
+  login: AuthPayload;
   createDraft: Post;
+  deleteOnePost?: Maybe<Post>;
   publish?: Maybe<Post>;
 };
 
-export type MutationSignupUserArgs = {
-  data: UserCreateInput;
+export type MutationSignupArgs = {
+  name?: Maybe<Scalars["String"]>;
+  email?: Maybe<Scalars["String"]>;
+  password?: Maybe<Scalars["String"]>;
 };
 
-export type MutationDeleteOnePostArgs = {
-  where: PostWhereUniqueInput;
+export type MutationLoginArgs = {
+  email?: Maybe<Scalars["String"]>;
+  password?: Maybe<Scalars["String"]>;
 };
 
 export type MutationCreateDraftArgs = {
   title?: Maybe<Scalars["String"]>;
   content?: Maybe<Scalars["String"]>;
-  authorEmail?: Maybe<Scalars["String"]>;
+};
+
+export type MutationDeleteOnePostArgs = {
+  where: PostWhereUniqueInput;
 };
 
 export type MutationPublishArgs = {
@@ -43,23 +56,12 @@ export type MutationPublishArgs = {
 export type Post = {
   __typename?: "Post";
   id: Scalars["ID"];
-  title: Scalars["String"];
-  content?: Maybe<Scalars["String"]>;
   createdAt: Scalars["DateTime"];
   updatedAt: Scalars["DateTime"];
   published: Scalars["Boolean"];
-};
-
-export type PostCreateManyWithoutPostsInput = {
-  create?: Maybe<Array<PostCreateWithoutAuthorInput>>;
-  connect?: Maybe<Array<PostWhereUniqueInput>>;
-};
-
-export type PostCreateWithoutAuthorInput = {
-  id?: Maybe<Scalars["ID"]>;
-  published: Scalars["Boolean"];
   title: Scalars["String"];
   content?: Maybe<Scalars["String"]>;
+  author?: Maybe<User>;
 };
 
 export type PostWhereUniqueInput = {
@@ -68,14 +70,11 @@ export type PostWhereUniqueInput = {
 
 export type Query = {
   __typename?: "Query";
-  post?: Maybe<Post>;
+  me?: Maybe<User>;
   users: Array<User>;
   feed: Array<Post>;
   filterPosts: Array<Post>;
-};
-
-export type QueryPostArgs = {
-  where: PostWhereUniqueInput;
+  post?: Maybe<Post>;
 };
 
 export type QueryFeedArgs = {
@@ -84,6 +83,10 @@ export type QueryFeedArgs = {
 
 export type QueryFilterPostsArgs = {
   searchString?: Maybe<Scalars["String"]>;
+};
+
+export type QueryPostArgs = {
+  where: PostWhereUniqueInput;
 };
 
 export type User = {
@@ -101,17 +104,15 @@ export type UserPostsArgs = {
   first?: Maybe<Scalars["Int"]>;
   last?: Maybe<Scalars["Int"]>;
 };
+export type AuthPayloadFragmentFragment = { __typename?: "AuthPayload" } & Pick<
+  AuthPayload,
+  "token"
+> & { user: { __typename?: "User" } & UserFragmentFragment };
 
-export type UserCreateInput = {
-  id?: Maybe<Scalars["ID"]>;
-  email: Scalars["String"];
-  name?: Maybe<Scalars["String"]>;
-  posts?: Maybe<PostCreateManyWithoutPostsInput>;
-};
 export type PostFragmentFragment = { __typename?: "Post" } & Pick<
   Post,
   "id" | "published" | "title" | "content" | "published"
->;
+> & { author: Maybe<{ __typename?: "User" } & UserFragmentFragment> };
 
 export type UserFragmentFragment = { __typename?: "User" } & Pick<
   User,
@@ -121,7 +122,6 @@ export type UserFragmentFragment = { __typename?: "User" } & Pick<
 export type CreateDraftMutationMutationVariables = {
   title: Scalars["String"];
   content: Scalars["String"];
-  authorEmail: Scalars["String"];
 };
 
 export type CreateDraftMutationMutation = { __typename?: "Mutation" } & {
@@ -136,6 +136,15 @@ export type DeleteOnePostMutation = { __typename?: "Mutation" } & {
   deleteOnePost: Maybe<{ __typename?: "Post" } & PostFragmentFragment>;
 };
 
+export type LoginUserMutationMutationVariables = {
+  email: Scalars["String"];
+  password: Scalars["String"];
+};
+
+export type LoginUserMutationMutation = { __typename?: "Mutation" } & {
+  login: { __typename?: "AuthPayload" } & AuthPayloadFragmentFragment;
+};
+
 export type PublishMutationMutationVariables = {
   id: Scalars["ID"];
 };
@@ -147,10 +156,11 @@ export type PublishMutationMutation = { __typename?: "Mutation" } & {
 export type SignupUserMutationMutationVariables = {
   name: Scalars["String"];
   email: Scalars["String"];
+  password: Scalars["String"];
 };
 
 export type SignupUserMutationMutation = { __typename?: "Mutation" } & {
-  signupUser: { __typename?: "User" } & UserFragmentFragment;
+  signup: { __typename?: "AuthPayload" } & AuthPayloadFragmentFragment;
 };
 
 export type FeedQueryQueryVariables = {
@@ -159,6 +169,12 @@ export type FeedQueryQueryVariables = {
 
 export type FeedQueryQuery = { __typename?: "Query" } & {
   feed: Array<{ __typename?: "Post" } & PostFragmentFragment>;
+};
+
+export type MeQueryQueryVariables = {};
+
+export type MeQueryQuery = { __typename?: "Query" } & {
+  me: Maybe<{ __typename?: "User" } & UserFragmentFragment>;
 };
 
 export type PostQueryQueryVariables = {
@@ -174,15 +190,6 @@ export type UsersQueryQueryVariables = {};
 export type UsersQueryQuery = { __typename?: "Query" } & {
   users: Array<{ __typename?: "User" } & UserFragmentFragment>;
 };
-export const PostFragmentFragmentDoc = gql`
-  fragment PostFragment on Post {
-    id
-    published
-    title
-    content
-    published
-  }
-`;
 export const UserFragmentFragmentDoc = gql`
   fragment UserFragment on User {
     id
@@ -190,13 +197,31 @@ export const UserFragmentFragmentDoc = gql`
     email
   }
 `;
+export const AuthPayloadFragmentFragmentDoc = gql`
+  fragment AuthPayloadFragment on AuthPayload {
+    token
+    user {
+      ...UserFragment
+    }
+  }
+  ${UserFragmentFragmentDoc}
+`;
+export const PostFragmentFragmentDoc = gql`
+  fragment PostFragment on Post {
+    id
+    published
+    title
+    content
+    published
+    author {
+      ...UserFragment
+    }
+  }
+  ${UserFragmentFragmentDoc}
+`;
 export const CreateDraftMutationDocument = gql`
-  mutation createDraftMutation(
-    $title: String!
-    $content: String!
-    $authorEmail: String!
-  ) {
-    createDraft(title: $title, content: $content, authorEmail: $authorEmail) {
+  mutation createDraftMutation($title: String!, $content: String!) {
+    createDraft(title: $title, content: $content) {
       ...PostFragment
     }
   }
@@ -253,6 +278,38 @@ export const DeleteOnePostComponent = (props: DeleteOnePostComponentProps) => (
   />
 );
 
+export const LoginUserMutationDocument = gql`
+  mutation loginUserMutation($email: String!, $password: String!) {
+    login(email: $email, password: $password) {
+      ...AuthPayloadFragment
+    }
+  }
+  ${AuthPayloadFragmentFragmentDoc}
+`;
+export type LoginUserMutationMutationFn = ReactApollo.MutationFn<
+  LoginUserMutationMutation,
+  LoginUserMutationMutationVariables
+>;
+export type LoginUserMutationComponentProps = Omit<
+  ReactApollo.MutationProps<
+    LoginUserMutationMutation,
+    LoginUserMutationMutationVariables
+  >,
+  "mutation"
+>;
+
+export const LoginUserMutationComponent = (
+  props: LoginUserMutationComponentProps
+) => (
+  <ReactApollo.Mutation<
+    LoginUserMutationMutation,
+    LoginUserMutationMutationVariables
+  >
+    mutation={LoginUserMutationDocument}
+    {...props}
+  />
+);
+
 export const PublishMutationDocument = gql`
   mutation publishMutation($id: ID!) {
     publish(id: $id) {
@@ -286,12 +343,16 @@ export const PublishMutationComponent = (
 );
 
 export const SignupUserMutationDocument = gql`
-  mutation signupUserMutation($name: String!, $email: String!) {
-    signupUser(data: { name: $name, email: $email }) {
-      ...UserFragment
+  mutation signupUserMutation(
+    $name: String!
+    $email: String!
+    $password: String!
+  ) {
+    signup(name: $name, email: $email, password: $password) {
+      ...AuthPayloadFragment
     }
   }
-  ${UserFragmentFragmentDoc}
+  ${AuthPayloadFragmentFragmentDoc}
 `;
 export type SignupUserMutationMutationFn = ReactApollo.MutationFn<
   SignupUserMutationMutation,
@@ -334,6 +395,26 @@ export type FeedQueryComponentProps = Omit<
 export const FeedQueryComponent = (props: FeedQueryComponentProps) => (
   <ReactApollo.Query<FeedQueryQuery, FeedQueryQueryVariables>
     query={FeedQueryDocument}
+    {...props}
+  />
+);
+
+export const MeQueryDocument = gql`
+  query meQuery {
+    me {
+      ...UserFragment
+    }
+  }
+  ${UserFragmentFragmentDoc}
+`;
+export type MeQueryComponentProps = Omit<
+  ReactApollo.QueryProps<MeQueryQuery, MeQueryQueryVariables>,
+  "query"
+>;
+
+export const MeQueryComponent = (props: MeQueryComponentProps) => (
+  <ReactApollo.Query<MeQueryQuery, MeQueryQueryVariables>
+    query={MeQueryDocument}
     {...props}
   />
 );

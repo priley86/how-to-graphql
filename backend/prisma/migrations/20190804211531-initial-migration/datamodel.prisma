@@ -2,8 +2,7 @@
 datasource db {
   provider = "mysql"
   url      = "mysql://root:prisma@mysql:3306/prisma"
-  //note: use this url if not running docker, url = "mysql://root:prisma@localhost:3306/prisma"
-  //note: you can also use env vars instead, i.e.: url = env("MYSQL_URL")
+  // url      = "mysql://root:prisma@localhost:3306/prisma"
 }
 
 generator photon {
@@ -15,11 +14,11 @@ generator nexus_prisma {
 }
 
 model User {
-  id       String  @default(cuid()) @id @unique
-  email    String  @unique
-  password String
-  name     String?
-  posts    Post[]
+  id    String  @default(cuid()) @id @unique
+  email String  @unique
+  // password String
+  name  String?
+  posts Post[]
 }
 
 model Post {

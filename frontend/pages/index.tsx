@@ -5,6 +5,7 @@ import FeedList from '../components/feed';
 import NewDraft from '../components/new-draft';
 import UsersList from '../components/users';
 import SignupUser from '../components/signup-user';
+import LoginUser from '../components/login-user';
 
 const IndexPage: NextPage = () => {
   return (
@@ -12,6 +13,8 @@ const IndexPage: NextPage = () => {
       <h1>Simple Prisma 2 Blog Example</h1>
       <h3>Create User</h3>
       <SignupUser />
+      <h3>Login User</h3>
+      <LoginUser />
       <h3>Users</h3>
       <UsersList />
 

@@ -11,3 +11,6 @@ services:
       - ./frontend:/app
       - /app/node_modules
       - /app/.next
+    environment:
+      WAIT_HOSTS: mysql:3306
+      WAIT_HOSTS_TIMEOUT: 60

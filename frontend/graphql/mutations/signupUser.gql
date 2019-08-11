@@ -1,7 +1,11 @@
-#import from '../fragments/user.gql'
+#import from '../fragments/authpayload.gql'
 
-mutation signupUserMutation($name: String!, $email: String!) {
-  signupUser(data: { name: $name, email: $email }) {
-    ...UserFragment
+mutation signupUserMutation(
+  $name: String!
+  $email: String!
+  $password: String!
+) {
+  signup(name: $name, email: $email, password: $password) {
+    ...AuthPayloadFragment
   }
 }

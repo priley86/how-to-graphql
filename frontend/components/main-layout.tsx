@@ -1,7 +1,7 @@
 import React, { ReactNode, Component } from 'react';
 import { Layout } from 'antd';
-import Link from 'next/link';
 import Head from 'next/head';
+import Nav from './nav';
 
 const { Footer, Header, Content } = Layout;
 
@@ -18,16 +18,15 @@ class MainLayout extends Component<Props> {
         <Head>
           <title>{title}</title>
           <meta charSet="utf-8" />
-          <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+          <meta
+            name="viewport"
+            content="initial-scale=1.0, width=device-width"
+          />
         </Head>
         <Header>
-          <nav>
-            <Link href="/">
-              <a>Home</a>
-            </Link>
-          </nav>
+          <Nav />
         </Header>
-        <Content>{children}</Content>
+        <Content style={{ padding: '20px 20px' }}>{children}</Content>
         <Footer>
           <hr />
           <span>I'm here to stay (Footer)</span>

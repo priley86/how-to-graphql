@@ -2,12 +2,18 @@ import React from 'react';
 import initApollo from './init-apollo';
 import Head from 'next/head';
 import { getDataFromTree } from 'react-apollo';
+import { AUTH_TOKEN } from '../common/constants';
+import { getAuthToken } from './auth';
 
 export default App => {
   return class Apollo extends React.Component {
     static displayName = 'withApollo(App)';
     static async getInitialProps(ctx) {
-      const { Component, router } = ctx;
+      const {
+        Component,
+        router,
+        ctx: { req, res }
+      } = ctx;
 
       let appProps = {};
       if (App.getInitialProps) {
@@ -16,7 +22,14 @@ export default App => {
 
       // Run all GraphQL queries in the component tree
       // and extract the resulting data
-      const apollo = initApollo();
+      const apollo = initApollo(
+        {},
+        {
+          apiHost: process.env.API_HOST,
+          getToken: () => getAuthToken(req)
+        }
+      );
+
       if (typeof window === 'undefined') {
         try {
           // Run all GraphQL queries
@@ -46,13 +59,17 @@ export default App => {
       return {
         ...appProps,
         apolloState,
-        apiHost: process.env.API_HOST
+        apiHost: process.env.API_HOST,
+        getToken: () => getAuthToken(req)
       };
     }
 
     constructor(props) {
       super(props);
-      this.apolloClient = initApollo(props.apolloState, props.apiHost);
+      this.apolloClient = initApollo(props.apolloState, {
+        apiHost: props.apiHost,
+        getToken: getAuthToken
+      });
     }
 
     render() {
